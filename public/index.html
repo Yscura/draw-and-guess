@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Draw & Guess</title>
+
+    <!-- Let's borrow a cool looking Font from Google -->
+    <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400,700' rel='stylesheet' type='text/css'>
+
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/player.css" rel="stylesheet">
+    <link href="css/host.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="gameArea">
+        <!-- This is where the templates defined below will be used -->
+    </div>
+
+    <!-- Main Title Screen that appears when the page loads for the first time -->
+    <script id="intro-screen-template" type="text/template">
+
+        <div class="titleWrapper">
+
+            <div class="title">
+                Draw & Guess
+            </div>
+
+            <div class="buttons">
+
+                <button id="btnCreateGame" class="btn left">CREATE</button>
+                <button id="btnJoin" class="btn right">JOIN</button>
+                <div style="clear:both"></div>
+            </div>
+
+        </div>
+
+    </script>
+
+    <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
+    <script id="create-game-template" type="text/template">
+        <div class="createGameWrapper">
+
+            <div class="info">Open this site on your mobile device:</div>
+            <div id="gameURL" class="infoBig">Error!</div>
+
+            <div class="info">Then click <strong>JOIN</strong> and <br/> enter the following Game ID:</div>
+            <div id="spanNewGameCode" class="gameId">Error!</div>
+
+            <div class="info" id="playersWaiting"> Players waiting:</div>
+            <div id="playersWaitingBox"></div>
+        </div>
+    </script>
+
+    <!-- This screen appears when a player clicks "JOIN" on the Title Screen -->
+    <script id="join-game-template" type="text/template">
+        <div class="joinGameWrapper">
+            <div class="info">
+                <label for="inputPlayerName">Your Name:</label>
+                <input id="inputPlayerName" type="text" autocomplete="off"/>
+            </div>
+
+            <div class="info">
+                <label for="inputGameId">Game ID:</label>
+                <input id="inputGameId" type="text" autocomplete="off"/>
+            </div>
+
+            <div class="info buttons">
+                <button id="btnJoinGame" class="btn">Join Game</button>
+                <div id="playerWaitingMessage"></div>
+            </div>
+        </div>
+    </script>
+
+    <!-- This screen appears for the first player-->
+    <script id="start-game-template" type="text/template">
+        <div class="joinGameWrapper">
+            
+            <div class="info"><h4>You are the first player to join. <br>
+                Wait for your friends to join then press
+                <span id='wordColored'>Start</span>.</h4>
+                
+            </div>
+
+            <div class="info buttons">
+                <button id="btnStartGame" class="btn">Start Game</button>
+                <div id="playerWaitingMessage"></div>
+            </div>
+        </div>
+    </script>
+
+
+    <!-- This screen appears when a player is in a game-->
+    <script id="draw-template" type="text/template">
+        <div id="drawer">
+            <div id="wordArea">  
+                <div id="word"></div>
+                <div id="wordList"></div>
+            </div>
+            <div id="drawarea"></div>
+        </div>
+        <div id="guesser">
+            <div class="guesserWrapper">
+                <div class="info">
+                    <label for="inputGuess">Your guess:</label>
+                    <input id="inputGuess" type="text" autocomplete="off"/>
+                </div>
+    
+                <div class="info buttons">
+                    <button id="btnGuess" class="btn">Guess</button>
+                </div>
+                <div id="wrongGuess"></div>
+    
+            </div>
+        </div>
+        
+    </script>
+
+    <!-- This is the 'Host' screen. It displays the word for each player to match -->
+    <script id="host-game-template" type="text/template">
+        <div id="playerScores"></div>
+        <div id="hostwordArea">
+            <div id="hostWord"></div>
+            <div id="roundProgress">
+                <div id="roundBar"></div>
+            </div>
+        </div>
+        <div id="hostWrapper">
+            <div id="hostDrawArea">
+                <div id="drawarea" ></div>
+            </div>
+            <div id="hostGuessArea">
+                <div id="playerGuessBox"><ul id="playerGuesses"></ul></div>
+            </div>
+        </div>
+        
+        <div id="thumbnails"></div>
+    </script>
+
+    
+    <!-- jQuery! -->
+    <script src="libs/jquery-2.0.2.min.js"></script>
+
+    <!-- TextFit resizes text to fill a container.
+        It's used so the titles and game words fit properly on any size screen.
+        https://github.com/STRML/textFit   -->
+    <script src="libs/textFit.min.js"></script> 
+
+    <!-- FastClick is used to eliminate the 300ms delay when clicking items on a mobile device
+        https://github.com/ftlabs/fastclick -->
+    <script src="libs/fastclick.js"></script> 
+
+    <!-- If Socket.IO is used with Express, then the /socket.io/ path will
+        serve the proper Socket.IO javascript files used by the browser -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!--P5.js tool to use canvas and draw tools -->
+    <script src="libs/p5.js"></script>
+
+    <!-- app.js is where all the client-side game logic resides -->
+    <script src="app.js"></script>
+
+    <!-- sketch.js is where the P5 canvas is created -->
+    <script src="sketch.js"></script>
+</body>
+</html>

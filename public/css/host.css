@@ -1,0 +1,166 @@
+/* ******************************
+        HOST SCREEN
+    (host-game-template)
+****************************** */
+#playersWaiting{
+    font-size: 2em;
+}
+
+#playersWaitingBox{
+    height: 15%;
+    min-height: 100px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.playerWaiting {
+    width: 30%;
+    height: 100px;
+    padding: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 400;
+    font-size: 2EM;
+    white-space: initial;
+    word-wrap: break-word;
+    overflow: hidden;
+    color: var(--white);
+    background-color:var(--back-light);
+}
+
+#hostWrapper{
+    height:60%;
+    min-height: 600px;
+    margin-top: 1%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+
+#hostDrawArea{
+    width: 50%;
+}
+
+#hostGuessArea{
+    width: 50%;
+}
+
+#playerGuessBox{
+    position: relative;
+    height: 100%;
+    width: 80%;
+    background-color: var(--back-light);
+    border-radius: 4px; 
+    margin: auto;
+    overflow: auto;
+
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.playerGuess{
+    font-family: 'Quicksand', sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--white);
+    height:fit-content;
+    width: fit-content;
+    margin-top: 5px;
+    padding: 8px;
+    background-color:var(--back-light);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#playerGuesses{
+    width: 80%;
+}
+
+.playerGuessCorrect{
+    border: 5px solid rgb(202, 187, 52);
+}
+
+#hostwordArea{
+    position: relative;
+    margin-bottom: 50px;
+    width: 80%;
+    margin: auto;
+}
+
+#hostWord{
+    height: 100%;
+    width: 100%;
+    
+}
+
+#hostWord {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 400;
+    color: var(--white);
+    padding: 0;
+}
+
+#playerScores {
+    height: 10%;
+    min-height: 100px;
+    width: 100%;
+    position: relative;
+    top: 0;
+    text-align: center;
+    display: flex;
+    flex-direction:row;
+    justify-content: space-evenly;
+}
+
+.playerScore {
+    width: 50%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 400;
+    font-size: 1.4EM;
+    white-space: initial;
+    word-wrap: break-word;
+    overflow: hidden;
+    color: var(--white);
+    background-color:var(--back-light);
+    text-align: center;
+}
+
+/* .playerScore .score {
+   
+} */
+/* 
+.playerScore .playerName {
+  
+} */
+
+#thumbnails{
+    margin-top: 10%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 4;
+    justify-content: space-around;
+}
+
+#roundProgress {
+    width: 100%;
+    border-radius: 5px;
+    background-color: var(--back-light);
+  }
+  
+  #roundBar {
+    width: 1%;
+    height: 20px;
+    border-radius: inherit;
+    background-color: var(--highlight);
+  }
+

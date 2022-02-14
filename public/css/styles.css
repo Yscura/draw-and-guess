@@ -1,0 +1,252 @@
+:root{
+   
+    --back: #293d42;
+    --back-light: #375057;
+    --white: #DCE0D9;
+    --highlight: #33bb70;
+    --grey: #333;
+
+}
+
+html, body {
+    background-color: var(--back);
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    /* position: fixed; */
+
+    /* overflow-y: hidden;
+    overflow-x: hidden; */
+    overscroll-behavior-y: contain;
+    overscroll-behavior-x: contain;
+}
+
+
+/* ******************************
+              BUTTONS!
+     (Inspired by Bootstrap 3.0)
+   ****************************** */
+
+   .btn {
+    display: inline-block;
+    height: 100%;
+    width: 49%;
+    margin-bottom: 0;
+    color: var(--white);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 2em;
+    line-height: 1.2;
+    text-align: center;
+    background-color: var(--back-light);
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.btn:focus {
+    outline: thin dotted var(--grey);
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+}
+
+.btn:hover,
+.btn:focus {
+    color: var(--highlight);
+    text-decoration: none;
+}
+
+.btn:active,
+.btn.active {
+    outline: 0;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+
+/* ******************************
+          TITLE SCREEN
+     (intro-screen-template)
+   ****************************** */
+
+#gameArea {
+    height: 100%;
+    width: 100%;
+}
+
+
+.titleWrapper {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 400;
+    position: absolute;
+    height: 50%;
+    width: 96%;
+    margin: auto;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+}
+
+.title {
+    margin: 0px auto;
+    text-align: center;
+    width: 100%;
+    font-family: 'Quicksand', sans-serif;
+    color: var(--white);
+    font-weight: 300;
+}
+
+.buttons {
+    width: 100%;
+    text-align: center;
+}
+
+/* ******************************
+          START SCREEN
+     (create-game-template)
+   ****************************** */
+
+.createGameWrapper, .joinGameWrapper, .guesserWrapper, #drawer, .gameOver, .restart{
+    font-family: 'Quicksand', sans-serif;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.createGameWrapper .info{
+    color: var(--white);
+    font-weight: 400;
+    font-size: 2em;
+    margin-top: 1.5em;
+}
+
+.createGameWrapper{
+    color: var(--highlight);
+    font-weight: 300;
+}
+
+.info label {
+    display: block;
+}
+
+.info input {
+    text-align: center;
+    padding: 10px;
+    width: 200px;
+    height: 60px;
+    font-family: 'Quicksand', sans-serif;
+    color: var(--highlight);
+    font-weight: 300;
+    font-size: 54px;
+    border: 1px dotted var(--white);
+    border-radius: 10px;
+    background: transparent;
+}
+
+.info input#inputPlayerName {
+    width: 90%;
+}
+
+.info input#inputGuess {
+    width: 80%;
+}
+
+
+/* ******************************
+           JOIN SCREEN
+      (join-game-template)
+   ****************************** */
+
+.joinGameWrapper, .guesserWrapper{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 320px;
+}
+
+.joinGameWrapper .info, .guesserWrapper .info {
+    font-size: 1.5em;
+    color: var(--white);
+    height: 30%;
+    padding-top: 1%;
+}
+
+.joinGameWrapper .btn, .guesserWrapper  .btn{
+    width: 100%;
+    height: 50%;
+}
+
+#playerWaitingMessage {
+    font-size: 2em;
+}
+
+.createGameWrapper #gameURL {
+    font-size: 4em;
+}
+
+.createGameWrapper .gameId {
+    font-size: 8em;
+}
+
+
+/* ******************************
+          TITLE SCREEN
+     (intro-screen-template)
+   ****************************** */
+
+.gameOver, .restart {
+    display: block;
+    height: 20%;
+    padding-top: 10%;
+    font-size: 2em;
+    color: var(--white);
+}
+
+.btnGameOver {
+    width: 100%;
+    height: 10%;
+    position: fixed;
+    bottom: 0;
+}
+
+
+/* ******************************
+          Scrollbar
+    Custom scrollbar from w3schools
+   ****************************** */
+::-webkit-scrollbar {
+    width: 20px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px var(--grey); 
+    border-radius: 5px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #1e2d31; 
+    border-radius: 5px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #151f22; 
+  }
