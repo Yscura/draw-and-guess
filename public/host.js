@@ -199,22 +199,22 @@ App.Host = {
         var width = 1;
         var id = setInterval(updateBar, 1);
         function updateBar() {
-        if (width >= 100) {
-            clearInterval(id);
-            i = 0;
-            var data = {
-                gameId : App.gameId,
-                round : App.currentRound,
-                players : App.Host.players,
-                maxRounds: App.maxRounds
+            if (width >= 100) {
+                clearInterval(id);
+                i = 0;
+                var data = {
+                    gameId : App.gameId,
+                    round : App.currentRound,
+                    players : App.Host.players,
+                    maxRounds: App.maxRounds
+                }
+                $("#roundBar").hide();
+                IO.socket.emit('hostNextRound',data);
+            } 
+            else {
+                width +=0.08;
+                $elem[0].style.width = width + "%";
             }
-            $("#roundBar").hide();
-            IO.socket.emit('hostNextRound',data);
-        } 
-        else {
-            width +=0.08;
-            $elem[0].style.width = width + "%";
-        }
         }
     },
 
@@ -258,5 +258,28 @@ App.Host = {
         $("#hostWrapper").hide();
         App.Host.players = [];
         drawp5.drawEnabled = false;
+    },
+
+    /**
+     * Remove player info from the host
+     * @param  {} playerId
+     */
+    playerLeft : function(playerId) {
+        for( var i = 0; i < App.Host.players.length; i++){ 
+            if ( App.Host.players[i].mySocketId === playerId) {
+                App.Host.players.splice(i, 1); 
+            }
+        }
+
+        //Set playerscore to disconnected
+        var $pscore = $('#' + playerId).find(".score");
+        var $p = $('#' + playerId);
+        $pscore.text("Disconnected");
+        $p.css("backgroundColor", "black");
+
+        //Remove playerscore after delay
+        setInterval(function(){
+            $('#' + playerId).remove();
+        },10000);
     },
 }

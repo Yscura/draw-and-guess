@@ -33,24 +33,7 @@ exports.initGame = function(sio, socket){
     gameSocket.on("drawLine", playerDrawLine);
     gameSocket.on("resetCanvas", resetCanvas);
 
-    gameSocket.on('disconnecting', function () {
-        /* var playerId =  this.id;
-        var gameId = Array.from(this.rooms)[1];
-        console.log("Disconnection: PlayerID: " + playerId + " , gameId: " + gameId);
-         */
-        /* if(gameId){
-            this.join(gameId);
-            console.log("Rejoining game");
-            console.log(gameSocket.adapter.rooms.get(gameId));
-            io.sockets.to(playerId).emit('reJoining', playerId);
-        } */
-        /*
-        setTimeout(function () {
-            if(gameId){}
-            console.log("Dis-Connected");
-            console.log(gameSocket.adapter.rooms.get(gameId));
-        }, 10000); */
-    });
+    gameSocket.on('disconnecting',playerLeft); 
 }
 
 
@@ -80,11 +63,6 @@ function hostCreateNewGame() {
     this.join(thisGameId);
     
 };
-
-function firstPlayerJoined(data){
-    io.sockets.to(data.playerId).emit('firstPlayerJoined', data);
-}
-
 
 function hostPrepareGame(data) {
 
@@ -163,6 +141,10 @@ function playerJoinGame(data) {
     }
 }
 
+function firstPlayerJoined(data){
+    io.sockets.to(data.playerId).emit('firstPlayerJoined', data);
+}
+
 function playerGuess(data) {
     io.sockets.in(data.gameId).emit('hostCheckGuess', data);
 }
@@ -186,6 +168,15 @@ function playerEndGame(data) {
 function playerRestart(data) {
     data.mySocketId = this.id;
     io.sockets.in(data.gameId).emit('playerJoinedRoom',data);
+}
+
+function playerLeft() {
+    var playerId =  this.id;
+    var gameId = Array.from(this.rooms)[1];
+    
+    if(gameId){
+        io.sockets.in(gameId).emit('playerLeft', playerId);
+    }
 }
 
 //GAME LOGIC

@@ -139,11 +139,11 @@ App.Player = {
         App.$gameArea.html(App.$templateStartGame);
         //TODO: language input
 
-        var numRounds = $('#numRounds')[0];
-        $("#rounds").text(numRounds.value);
+        var $numRounds = $('#numRounds')[0];
+        $("#rounds").text($numRounds.value);
 
-        numRounds.oninput = function() {
-            $("#rounds").text(numRounds.value);
+        $numRounds.oninput = function() {
+            $("#rounds").text($numRounds.value);
         }
     },
 

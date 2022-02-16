@@ -10,7 +10,7 @@ IO = {
     //Events from the server
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
-        //IO.socket.on('reJoining', IO.onreJoining);
+        IO.socket.on('playerLeft', IO.onPlayerLeft);
         IO.socket.on('newGameCreated', IO.onNewGameCreated);
         IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom);
         IO.socket.on('firstPlayerJoined', IO.firstPlayerJoined);
@@ -49,11 +49,11 @@ IO = {
         App.mySocketId = IO.socket.id;
     },
 
-    /*  onreJoining : function(playerId) {
-        App.mySocketId = playerId;
-        console.log("Rejoining");
-        
-    }, */
+     onPlayerLeft : function(playerId) {
+        if(App.myRole === 'Host') {
+            App.Host.playerLeft(playerId);
+        }
+    },
 
     onNewGameCreated : function(data) {
         App.Host.gameInit(data);

@@ -7,9 +7,9 @@ jQuery(function($){
     'use strict';
 
     //Prevent user from accidentally leave the game
-    $(window).on("beforeunload", function (event) {
+   /*  $(window).on("beforeunload", function (event) {
         return "";
-    });
+    }); */
     
     App = {
 
