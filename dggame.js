@@ -1,4 +1,4 @@
-const { json } = require("express/lib/response");
+//const { json } = require("express/lib/response");
 
 var io;
 var gameSocket;
@@ -10,6 +10,7 @@ exports.initGame = function(sio, socket){
     io = sio;
     gameSocket = socket;
     gameSocket.emit('connected');
+    //console.log("Connection: PlayerID: " + gameSocket.id);
 
     // Host Events
     gameSocket.on('hostCreateNewGame', hostCreateNewGame);
@@ -25,6 +26,7 @@ exports.initGame = function(sio, socket){
     gameSocket.on('playerWrongGuess', playerWrongGuess);
 
     gameSocket.on('playerAnswer', playerAnswer);
+    gameSocket.on('playerEndGame', playerEndGame);
     gameSocket.on('playerRestart', playerRestart);
 
 
@@ -34,14 +36,15 @@ exports.initGame = function(sio, socket){
     gameSocket.on('disconnecting', function () {
         /* var playerId =  this.id;
         var gameId = Array.from(this.rooms)[1];
-        //console.log("Disconnection: PlayerID: " + playerId + " , gameId: " + gameId);
-
-        if(gameId){
+        console.log("Disconnection: PlayerID: " + playerId + " , gameId: " + gameId);
+         */
+        /* if(gameId){
             this.join(gameId);
             console.log("Rejoining game");
             console.log(gameSocket.adapter.rooms.get(gameId));
             io.sockets.to(playerId).emit('reJoining', playerId);
-        }
+        } */
+        /*
         setTimeout(function () {
             if(gameId){}
             console.log("Dis-Connected");
@@ -54,7 +57,6 @@ exports.initGame = function(sio, socket){
 function playerDrawLine(data){
     var host = Array.from(gameSocket.adapter.rooms.get(data.gameId))[0];
     io.sockets.to(host).emit("drawLine", data);
-    //io.sockets.in(data.gameId).emit("drawLine", data);
 };
 
 
@@ -84,17 +86,18 @@ function firstPlayerJoined(data){
 }
 
 
-function hostPrepareGame(gameId) {
+function hostPrepareGame(data) {
 
-    var clients = gameSocket.adapter.rooms.get(gameId);
+    var clients = gameSocket.adapter.rooms.get(data.gameId);
     var numClients = clients ? clients.size : 0;
-    
+
     //Min 2 Players + Host
     if(numClients > 2){
         var sock = this;
         var data = {
             mySocketId : sock.id,
-            gameId : gameId
+            gameId : data.gameId,
+            maxRounds: data.maxRounds
         };
 
         io.sockets.in(data.gameId).emit('beginNewGame', data);
@@ -112,7 +115,7 @@ function hostStartGame(data) {
 
 //A player answered correctly. Time for the next word.
 function hostNextRound(data) {
-    if(data.round < 5){
+    if(data.round < data.maxRounds){
         if(!data.word){
             sendWords(data.round, data);
         }
@@ -121,6 +124,8 @@ function hostNextRound(data) {
         }
     } 
     else{
+        var firstPlayer = Array.from(gameSocket.adapter.rooms.get(data.gameId))[1];
+        data.firstPlayer = firstPlayer;
         io.sockets.in(data.gameId).emit('gameOver',data);
     }
 }
@@ -148,8 +153,6 @@ function playerJoinGame(data) {
         var clients = gameSocket.adapter.rooms.get(data.gameId);
         var numClients = clients ? clients.size : 0;
         data.myColor = playerColors[numClients -2];
-        //data.myColor = playerColors[ (Math.floor( Math.random() * playerColors.length ))];
-
 
         // Emit an event notifying the clients that the player has joined the room.
         io.sockets.in(data.gameId).emit('playerJoinedRoom', data);
@@ -159,19 +162,6 @@ function playerJoinGame(data) {
         this.emit('error',{message: "This room does not exist."} );
     }
 }
-
-/* var playerColors = generateHslaColors(50, 40, 1.0, 12);
-function generateHslaColors (saturation, lightness, alpha, amount) {
-    let colors = []
-    let huedelta = Math.trunc(360 / amount)
-  
-    for (let i = 0; i < amount; i++) {
-      let hue = i * huedelta
-      colors.push(`hsla(${hue},${saturation}%,${lightness}%,${alpha})`)
-    }
-  
-    return colors
-  } */
 
 function playerGuess(data) {
     io.sockets.in(data.gameId).emit('hostCheckGuess', data);
@@ -187,6 +177,10 @@ function playerCorrectGuess(data) {
 
 function playerAnswer(data) {
     io.sockets.in(data.gameId).emit('hostCheckAnswer', data);
+}
+
+function playerEndGame(data) {
+    io.sockets.in(data.gameId).emit('endGame',data);
 }
 
 function playerRestart(data) {
@@ -260,6 +254,7 @@ var testWords = [
 ]
 
 var playerColors = [
+    //Main playerColors
     'hsla(240,60%,40%,1)', //blue
     'hsla(0,60%,40%,1)',   //red
     'hsla(120,60%,40%,1)', //green
@@ -273,6 +268,8 @@ var playerColors = [
     'hsla(90,60%,40%,1)',  //light-green
     'hsla(210,60%,40%,1)', //light-blue-blue
 
+    //Extra darker playerColors
+    //TODO: add more for more players
     'hsla(240,80%,20%,1)', //blue
     'hsla(0,80%,20%,1)',   //red
     'hsla(120,80%,20%,1)', //green

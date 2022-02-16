@@ -187,7 +187,7 @@ html, body {
     padding-top: 1%;
 }
 
-.joinGameWrapper .btn, .guesserWrapper  .btn{
+.joinGameWrapper .btn, .startGameWrapper .btn, .guesserWrapper  .btn{
     width: 100%;
     height: 50%;
 }
@@ -214,7 +214,7 @@ html, body {
     display: block;
     height: 20%;
     padding-top: 10%;
-    font-size: 2em;
+    font-size: 3em;
     color: var(--white);
 }
 
@@ -249,4 +249,45 @@ html, body {
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #151f22; 
+  }
+
+
+  /* ******************************
+            Slider
+    Custom slider from w3schools
+   ****************************** */
+  .numRoundsSlider {
+    width: 80%;
+    margin: auto;
+  }
+  
+  .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: var(--back-light);
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  .slider:hover {
+    opacity: 1;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: var(--highlight);
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: var(--highlight);
+    cursor: pointer;
   }

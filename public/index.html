@@ -76,7 +76,7 @@
 
     <!-- This screen appears for the first player-->
     <script id="start-game-template" type="text/template">
-        <div class="joinGameWrapper">
+        <div class="startGameWrapper">
             
             <div class="info"><h4>You are the first player to join. <br>
                 Wait for your friends to join then press
@@ -84,9 +84,13 @@
                 
             </div>
 
+            <div  class="numRoundsSlider">
+                <input type="range" min="1" max="30" value="15" class="slider" id="numRounds">
+                <p>Rounds: <span id="rounds"></span></p>
+              </div>
+
             <div class="info buttons">
                 <button id="btnStartGame" class="btn">Start Game</button>
-                <div id="playerWaitingMessage"></div>
             </div>
         </div>
     </script>
@@ -150,7 +154,7 @@
 
     <!-- FastClick is used to eliminate the 300ms delay when clicking items on a mobile device
         https://github.com/ftlabs/fastclick -->
-    <script src="libs/fastclick.js"></script> 
+    <!-- <script src="libs/fastclick.js"></script>  -->
 
     <!-- If Socket.IO is used with Express, then the /socket.io/ path will
         serve the proper Socket.IO javascript files used by the browser -->
@@ -159,9 +163,15 @@
     <!--P5.js tool to use canvas and draw tools -->
     <script src="libs/p5.js"></script>
 
+    <!-- io.js takes care of the client-side server events -->
+    <script src="io.js"></script>
+
     <!-- app.js is where all the client-side game logic resides -->
     <script src="app.js"></script>
-
+    <script src="host.js"></script>
+    <script src="player.js"></script>
+    
+    
     <!-- sketch.js is where the P5 canvas is created -->
     <script src="sketch.js"></script>
 </body>

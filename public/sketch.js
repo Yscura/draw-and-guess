@@ -45,8 +45,8 @@ const s = (p) => {
 
         p.initButtons();
 
-        socket = testIO.getSocket();
-        gameId = testApp.gameId;
+        socket = IO.getSocket();
+        gameId = App.gameId;
 
         p.drawEnabled = false;
         p.isHost = false;
@@ -58,11 +58,11 @@ const s = (p) => {
             
         }
         p.image(graphics,0,0);
-
+        
     }
 
     /* p.windowResized = function(){
-       
+       TODO: Fill canvas in parent div
     } */
 
     p.hostCanvas = function(args){
@@ -70,9 +70,15 @@ const s = (p) => {
         p.isHost = true;
     }
 
-    p.saveDrawing = function(args){
+    p.saveDrawing = function(name, word){
+        //let imgString = graphics.elt.toDataURL();
+        //p.thumbnails.push([imgString, name, word]);
+        //let showImg = createImage(imgString, "");
+        //showImg.hide():
+        //Convert imgString to blob before sending it to the server
+
         let gs = canvas.get();
-        p.thumbnails.push([gs, args[0], args[1]]);
+        p.thumbnails.push([gs, name, word]);
     }
 
     p.newDrawing = function(data){
@@ -117,26 +123,26 @@ const s = (p) => {
     }
 
     p.mousePressed = function(){
-            if(p.drawEnabled){
-                var data = {
-                    gameId: gameId,
-                    x: p.mouseX,
-                    y: p.mouseY,
-                    px: p.pmouseX, 
-                    py: p.pmouseY,
-                    c: currentColor,
-                    s: currentSize,
-                    bc: currentBackColor,
-                    e: eraseEnabled
-                }
-                
-                p.background(currentBackColor);
-                graphics.strokeWeight(currentSize);
-                graphics.stroke(currentColor);
-                graphics.circle(p.mouseX, p.mouseY, currentSize/10);
-
-                socket.emit("drawLine", data);
+        if(p.drawEnabled){
+            var data = {
+                gameId: gameId,
+                x: p.mouseX,
+                y: p.mouseY,
+                px: p.pmouseX, 
+                py: p.pmouseY,
+                c: currentColor,
+                s: currentSize,
+                bc: currentBackColor,
+                e: eraseEnabled
             }
+            
+            p.background(currentBackColor);
+            graphics.strokeWeight(currentSize);
+            graphics.stroke(currentColor);
+            graphics.circle(p.mouseX, p.mouseY, currentSize/10);
+
+            socket.emit("drawLine", data);
+        }
     }
     
     p.reset = function(){
@@ -447,6 +453,9 @@ displayThumbnails = function(tn){
     });
 }
 
+/**
+ * Thumbnail object
+ */
 const t = (p) => {
 
     p.setup = function(){
@@ -468,6 +477,7 @@ const t = (p) => {
         p.infoDiv.style("padding", "5px");
         p.infoDiv.style("text-align", "center");
         p.masterDiv.style("background-color", p.color("#375057"));
+        
     }
 
     p.draw = function(){
