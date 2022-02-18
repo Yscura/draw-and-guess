@@ -168,26 +168,26 @@ App.Player = {
      * @param  {} data
      */
     newWords : function(data){
-        //Set new drawer
+        //Set current drawer
         App.Player.isDrawer = false;
         if(data.currentDrawer.mySocketId === App.mySocketId){
             App.Player.isDrawer = true;
         }
+
         $(App.$doc).ready(function(){
             $("#guesser").hide();
             $("#drawarea").hide();
-            
         });
 
-         //Show drawer page
+        //Add words to a list and display it
         if(App.Player.isDrawer){
+            $('#word').html("Choose a word to draw.");
 
             var $list = $('<ul/>').attr('id','ulWords');
 
             // Insert a list item for each word in the word list
             // received from the server.
             $.each(data.words, function(){
-                
                 var $li = $('<li/>')
                     .append( $('<button/>')
                         .addClass('btnAnswer')
@@ -197,16 +197,14 @@ App.Player = {
                     );
                 
                 $list.append($li);
-                //App.doTextFitWord($li);
             });
             $('#drawer').show();
             $("#wordList").show();
             $('#wordList').html($list);
-            App.doTextFitWord('#wordList');
-            $('#word').html("Choose a word to draw.");
-            
+            App.doTextFitWord($list);
+           
         }
-        //Show guesser page
+        //Show wait msg
         else{
             $('#word').html("Wait for " + "<span id='wordColored'>"+ data.currentDrawer.playerName + "</span>" + " to choose a word.");
             App.doTextFitWord('#word');
@@ -279,15 +277,11 @@ App.Player = {
      * @param  {} data
      */
     wrongGuess: function(data){
-        function complete(){
-            $('#wrongGuess').show();
-            $('#wrongGuess').html('');
-
-            //TODO: Get the div somehow
-        }
-
-        //TODO: insert into list and fade the list as it goes along
-        $('#wrongGuess').prepend($("<div/>").html("<span id='wordColored'>"+ data.guess+ "</span>" + " is wrong. Try again.").fadeOut(1500, complete));
+        var $guess = $("<div/>").html("<span id='wordColored'>"+ data.guess+ "</span>" + " is wrong. Try again.")
+        $('#wrongGuess').prepend($guess);
+        $guess.fadeOut(5000, function(){
+            $guess.html('');
+        })
     },
 
     /**

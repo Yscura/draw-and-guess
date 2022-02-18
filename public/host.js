@@ -44,6 +44,7 @@ App.Host = {
 
         // Show the gameId / room id on screen
         $('#spanNewGameCode').text(App.gameId);
+
     },
 
     /**
@@ -56,15 +57,22 @@ App.Host = {
             App.Host.isNewGame = false;
             App.Host.displayNewGameScreen();
         }
-        // Update host screen
 
-        var $newP = $("<div/>").addClass("playerWaiting").append($("<div/>").text(data.playerName));
-        $newP[0].style.backgroundColor = data.myColor;
+        // Update host screen
+        var $newP = $("<div/>").addClass("playerWaiting").attr('id', data.mySocketId)
+            .append($("<div/>").addClass("playerName").text(data.playerName));
+
+        $newP.css("backgroundColor", data.myColor);
         $("#playersWaitingBox").append($newP);
 
-        // Store the new player's data on the Host.
+
+        //Soundeffect
+        var audio_connected = new Audio("audio/connected.mp3");
+        audio_connected.play();
+
+        // Store the new player
         App.Host.players.push(data);
-        // Increment the number of players in the room
+
         App.Host.numPlayersInRoom += 1;
 
         if(App.Host.numPlayersInRoom === 1){
@@ -81,14 +89,13 @@ App.Host = {
      * @param  {} data
      */
     gameCountdown : function(data) {
-
         App.maxRounds = data.maxRounds;
         App.$gameArea.html(App.$hostGame);
         App.doTextFit('#hostWord');
 
-        // Begin the on-screen countdown timer
+        // Begin the countdown timer
         var $secondsLeft = $('#hostWord');
-        App.countDown( $secondsLeft, 1, function(){
+        App.countDown( $secondsLeft, 5, function(){
             var data = {
                 gameId : App.gameId,
                 players : App.Host.players
@@ -96,6 +103,7 @@ App.Host = {
 
             IO.socket.emit('hostCountdownFinished', data);
         });
+
         $("#playerGuessBox").hide();
         $("#roundBar").hide();
         
@@ -103,9 +111,10 @@ App.Host = {
         $.each(App.Host.players, function(){
             var $p = $("<div/>").addClass("playerScore").attr('id', this.mySocketId)
                 .append($("<div/>").addClass("playerName").text(this.playerName))
-                .append($("<div/>").addClass("score").text(0));
+                .append($("<div/>").addClass("score").text(0))
+                .append($("<div/>").addClass("addscore").css("display", "none"));
 
-            $p[0].style.backgroundColor = this.myColor;
+            $p.css("backgroundColor", this.myColor);
             $("#playerScores").append($p);
             
         });
@@ -117,9 +126,12 @@ App.Host = {
      * @param  {} data
      */
     newWords : function(data) {
-        
         $('#hostWord').html("Waiting for " + "<span id='wordColored'>"+ data.currentDrawer.playerName + "</span>" + " to choose a word"); 
         App.doTextFit('#hostWord');
+
+        //Soundeffect
+        var audio_tick = new Audio("audio/tick.mp3");
+        audio_tick.play();
 
         App.Host.currentDrawer = data.currentDrawer.playerName;
         App.Host.currentRound = data.round;
@@ -135,15 +147,17 @@ App.Host = {
         $("#playerGuesses").html('');
 
         $("#drawarea").show();
-        //console.log("Width: " + $("#drawarea").width())
         $("#playerGuessBox").show();
-        
         drawp5.draw_buttons.hide();
         drawp5.drawEnabled = false;
 
         if( $("#drawarea").width() >= 600){
             drawp5.hostCanvas();
         }
+
+        //Soundeffect
+        var audio_connected = new Audio("audio/connected.mp3");
+        audio_connected.play();
         
         IO.socket.emit('resetCanvas',data);
         App.Host.currentCorrectWord = data.word;
@@ -159,13 +173,22 @@ App.Host = {
             var guess = data.guess.toLowerCase();
             var player = data.playerName;
             
+            //Add the guess to an element
             var $li = $('<li/>').addClass('playerGuess').html(player + ": " + guess);
-            $li[0].style.backgroundColor = data.myColor;
+            $li.css("backgroundColor", data.myColor);
 
             if( App.Host.currentCorrectWord === guess ) {
-                //Increase score
                 var $pScore = $('#' + data.playerId).find(".score");
-                $pScore.text( +$pScore.text() + 1);
+                
+                //Short animation "+1" score
+                var $pAddScore = $('#' + data.playerId).find(".addscore");
+                $pAddScore.text("+1").fadeIn(500, function() {
+                    setTimeout(function() {
+                        $pAddScore.css("display", "none")
+                        //Add score to player
+                        $pScore.text( +$pScore.text() + 1);
+                    }, 3000);
+                });
 
                 $li.addClass('playerGuessCorrect');
 
@@ -177,6 +200,10 @@ App.Host = {
                 IO.socket.emit('playerCorrectGuess',data);
             }
             else{
+                //Soundeffect
+                var audio_wrong = new Audio("audio/wrongGuess.mp3");
+                audio_wrong.play();
+
                 IO.socket.emit('playerWrongGuess',data);
             }
 
@@ -191,8 +218,12 @@ App.Host = {
     correctGuess : function(data) {
         $('#hostWord').html("<span id='wordColored'>"+ data.playerName + "</span>" + " guessed correctly!");
         App.doTextFit('#hostWord');
-        //TODO: play soundeffect
 
+        //Soundeffect
+        var audio_correct = new Audio("audio/correctWord.mp3");
+        audio_correct.play();
+
+        //Progress bar from w3schools
         $("#roundBar").show();
         var i = 0;
         var $elem = $("#roundBar");
@@ -202,6 +233,7 @@ App.Host = {
             if (width >= 100) {
                 clearInterval(id);
                 i = 0;
+                //Ask host for new round data
                 var data = {
                     gameId : App.gameId,
                     round : App.currentRound,
@@ -246,8 +278,12 @@ App.Host = {
         else{
             $('#hostWord').text( winner + ' Wins!' );
         }
-        
         App.doTextFit('#hostWord');
+
+        //Soundeffect
+        var audio_winner = new Audio("audio/winner.mp3");
+        audio_winner.volume = 0.3;
+        audio_winner.play();
 
         displayThumbnails(drawp5.thumbnails);
         drawp5.thumbnails = [];
@@ -270,11 +306,12 @@ App.Host = {
                 App.Host.players.splice(i, 1); 
             }
         }
+        App.Host.numPlayersInRoom -= 1;
 
-        //Set playerscore to disconnected
+        //Set player to disconnected
         var $pscore = $('#' + playerId).find(".score");
-        var $p = $('#' + playerId);
         $pscore.text("Disconnected");
+        var $p = $('#' + playerId);
         $p.css("backgroundColor", "black");
 
         //Remove playerscore after delay

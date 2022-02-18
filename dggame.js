@@ -1,25 +1,23 @@
-//const { json } = require("express/lib/response");
-
 var io;
 var gameSocket;
 var wb = require('./wordBank');
 //const Datastore = require('nedb');
 
-//This function is called by index.js to initialize a new game instance.
+
 exports.initGame = function(sio, socket){
     io = sio;
     gameSocket = socket;
     gameSocket.emit('connected');
     //console.log("Connection: PlayerID: " + gameSocket.id);
 
-    // Host Events
+    //Host Events
     gameSocket.on('hostCreateNewGame', hostCreateNewGame);
     gameSocket.on('hostPrepareGame', hostPrepareGame);
     gameSocket.on('hostCountdownFinished', hostStartGame);
     gameSocket.on('hostNextRound', hostNextRound);
     gameSocket.on('firstPlayerJoined', firstPlayerJoined);
 
-    // Player Events
+    //Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
     gameSocket.on('playerGuess', playerGuess);
     gameSocket.on('playerCorrectGuess', playerCorrectGuess);
@@ -29,19 +27,17 @@ exports.initGame = function(sio, socket){
     gameSocket.on('playerEndGame', playerEndGame);
     gameSocket.on('playerRestart', playerRestart);
 
+    gameSocket.on('disconnecting',playerLeft); 
 
+    //P5 drawing Events
     gameSocket.on("drawLine", playerDrawLine);
     gameSocket.on("resetCanvas", resetCanvas);
-
-    gameSocket.on('disconnecting',playerLeft); 
 }
-
 
 function playerDrawLine(data){
     var host = Array.from(gameSocket.adapter.rooms.get(data.gameId))[0];
     io.sockets.to(host).emit("drawLine", data);
 };
-
 
 function resetCanvas(data){
     io.sockets.in(data.gameId).emit("resetCanvas", data);
@@ -49,18 +45,20 @@ function resetCanvas(data){
 
 //HOST FUNCTIONS
 
-//The 'START' button was clicked and 'hostCreateNewGame' event occurred.
 function hostCreateNewGame() {
-    // Create a unique Socket.IO Room
 
-    //var thisGameId = ( Math.random() * 10000 ) | 0;
-    var thisGameId = 1;
-
-    // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-    this.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id});
-
-    // Join the Room and wait for the players
-    this.join(thisGameId);
+    var thisGameId = Math.floor(Math.random() * (9999 - 1001 + 1) + 1001);
+    //var thisGameId = 1;
+    
+    //If this room does not yet exist, join it
+    if(!gameSocket.adapter.rooms.get(thisGameId)){
+        this.join(thisGameId);
+        this.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id});
+    }
+    //Send undefined (need to try again)
+    else{
+        this.emit('newGameCreated', {gameId: undefined, mySocketId: this.id});
+    }
     
 };
 
@@ -86,12 +84,10 @@ function hostPrepareGame(data) {
     
 }
 
-//The Countdown has finished, and the game begins!
 function hostStartGame(data) {
     sendWords(0,data);
 };
 
-//A player answered correctly. Time for the next word.
 function hostNextRound(data) {
     if(data.round < data.maxRounds){
         if(!data.word){
@@ -110,33 +106,27 @@ function hostNextRound(data) {
 
 //PLAYER FUNCTIONS
 
-
-//A player clicked the 'START GAME' button. Attempt to connect them to the room 
 function playerJoinGame(data) {
-
-    // A reference to the player's Socket.IO socket object
     var sock = this;
 
-    // Look up the room ID in the Socket.IO manager object.
+    //Find the room
     var room = gameSocket.adapter.rooms.get(data.gameId);
 
-    // If the room exists...
+    //If the room exists, join it
     if( room != undefined ){
-        // attach the socket id to the data object.
+
         data.mySocketId = sock.id;
 
-        // Join the room
         sock.join(data.gameId);
         
+        //Set player color
         var clients = gameSocket.adapter.rooms.get(data.gameId);
         var numClients = clients ? clients.size : 0;
         data.myColor = playerColors[numClients -2];
 
-        // Emit an event notifying the clients that the player has joined the room.
         io.sockets.in(data.gameId).emit('playerJoinedRoom', data);
 
     } else {
-        // Otherwise, send an error message back to the player.
         this.emit('error',{message: "This room does not exist."} );
     }
 }
@@ -188,8 +178,8 @@ function sendWords(round, dataR) {
         round: round,
         currentDrawer: currentDrawer,
         words: wordData
-
     }
+
     io.sockets.in(dataR.gameId).emit('newWordData', data);
 }
 
@@ -198,7 +188,7 @@ function sendWord(data) {
     io.sockets.in(data.gameId).emit('newRoundData', data);
 }
 
-//This function does all the work of getting a new words
+//Get three new words
 function getWordData(){
     
     var words = [];
@@ -216,27 +206,9 @@ function randomInts(quantity, max){
       var candidateInt = Math.floor(Math.random() * max) 
       if(arr.indexOf(candidateInt) === -1) arr.push(candidateInt)
     }
-  return(arr)
-  }
+    return(arr)
+}
 
-
-var wordDb = [
-    "cat", 
-    "dog", 
-    "house", 
-    "moon", 
-    "tree", 
-    "book", 
-    "phone", 
-    "window", 
-    "hedgehog", 
-    "church",
-    "car",
-    "clock",
-    "toaster",
-    "mountain"
-    
-]
 
 var testWords = [
     "c", 
@@ -259,7 +231,7 @@ var playerColors = [
     'hsla(90,60%,40%,1)',  //light-green
     'hsla(210,60%,40%,1)', //light-blue-blue
 
-    //Extra darker playerColors
+    //Extra colors (darker playerColors)
     //TODO: add more for more players
     'hsla(240,80%,20%,1)', //blue
     'hsla(0,80%,20%,1)',   //red

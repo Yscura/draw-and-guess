@@ -7,9 +7,9 @@ jQuery(function($){
     'use strict';
 
     //Prevent user from accidentally leave the game
-   /*  $(window).on("beforeunload", function (event) {
+    $(window).on("beforeunload", function (event) {
         return "";
-    }); */
+    });
     
     App = {
 
@@ -91,6 +91,10 @@ jQuery(function($){
             // Start a 1 second timer
             var timer = setInterval(countItDown,1000);
 
+             //Soundeffect
+             var audio_tick = new Audio("audio/tick.mp3");
+             audio_tick.play();
+
             // Decrement the displayed timer value on each 'tick'
             function countItDown(){
                 startTime -= 1
@@ -103,6 +107,7 @@ jQuery(function($){
                     callback();
                     return;
                 }
+                audio_tick.play();
             }
 
         },

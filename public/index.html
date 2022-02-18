@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>Draw & Guess</title>
 
-    <!-- Let's borrow a cool looking Font from Google -->
+    <!-- Font from Google -->
     <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400,700' rel='stylesheet' type='text/css'>
 
     <link href="css/styles.css" rel="stylesheet">
     <link href="css/player.css" rel="stylesheet">
     <link href="css/host.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -21,28 +22,21 @@
 
     <!-- Main Title Screen that appears when the page loads for the first time -->
     <script id="intro-screen-template" type="text/template">
-
         <div class="titleWrapper">
-
             <div class="title">
                 Draw & Guess
             </div>
 
             <div class="buttons">
-
                 <button id="btnCreateGame" class="btn left">CREATE</button>
                 <button id="btnJoin" class="btn right">JOIN</button>
-                <div style="clear:both"></div>
             </div>
-
         </div>
-
     </script>
 
     <!-- This screen appears when a user clicks "CREATE" on the Title Screen -->
     <script id="create-game-template" type="text/template">
         <div class="createGameWrapper">
-
             <div class="info">Open this site on your mobile device:</div>
             <div id="gameURL" class="infoBig">Error!</div>
 
@@ -77,14 +71,12 @@
     <!-- This screen appears for the first player-->
     <script id="start-game-template" type="text/template">
         <div class="startGameWrapper">
-            
             <div class="info"><h4>You are the first player to join. <br>
                 Wait for your friends to join then press
                 <span id='wordColored'>Start</span>.</h4>
-                
             </div>
 
-            <div  class="numRoundsSlider">
+            <div class="numRoundsSlider">
                 <input type="range" min="1" max="30" value="15" class="slider" id="numRounds">
                 <p>Rounds: <span id="rounds"></span></p>
               </div>
@@ -119,10 +111,9 @@
     
             </div>
         </div>
-        
     </script>
 
-    <!-- This is the 'Host' screen. It displays the word for each player to match -->
+    <!-- This is the Host screen -->
     <script id="host-game-template" type="text/template">
         <div id="playerScores"></div>
         <div id="hostwordArea">
@@ -136,7 +127,9 @@
                 <div id="drawarea" ></div>
             </div>
             <div id="hostGuessArea">
-                <div id="playerGuessBox"><ul id="playerGuesses"></ul></div>
+                <div id="playerGuessBox">
+                    <ul id="playerGuesses"></ul>
+                </div>
             </div>
         </div>
         
@@ -166,11 +159,14 @@
     <!-- io.js takes care of the client-side server events -->
     <script src="io.js"></script>
 
-    <!-- app.js is where all the client-side game logic resides -->
+    <!-- app.js is where the client-side game logic resides -->
     <script src="app.js"></script>
+
+    <!-- App.Host functions and logic-->
     <script src="host.js"></script>
+
+    <!-- App.Player functions and logic-->
     <script src="player.js"></script>
-    
     
     <!-- sketch.js is where the P5 canvas is created -->
     <script src="sketch.js"></script>

@@ -38,9 +38,11 @@ const s = (p) => {
         p.frameRate(120);
 
         p.background(backgroundColor);
-        graphics.strokeWeight(10);
-        graphics.stroke(0);
+        
+        graphics.stroke(black);
         currentColor = black;
+        
+        graphics.strokeWeight(small);
         currentSize = small;
 
         p.initButtons();
