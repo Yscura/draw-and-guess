@@ -184,7 +184,6 @@
 
 #thumbnails{
     margin-top: 10%;
-    margin-right: 20px;
     display: flex;
     flex-wrap: wrap;
     flex-grow: 4;
