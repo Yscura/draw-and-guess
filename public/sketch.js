@@ -41,7 +41,7 @@ const s = (p) => {
         
         graphics.stroke(black);
         currentColor = black;
-        
+
         graphics.strokeWeight(small);
         currentSize = small;
 
@@ -73,18 +73,11 @@ const s = (p) => {
     }
 
     p.saveDrawing = function(name, word){
-        //let imgString = graphics.elt.toDataURL();
-        //p.thumbnails.push([imgString, name, word]);
-        //let showImg = createImage(imgString, "");
-        //showImg.hide():
-        //Convert imgString to blob before sending it to the server
-
         let gs = canvas.get();
         p.thumbnails.push([gs, name, word]);
     }
 
     p.newDrawing = function(data){
-        console.log("drawing recieved");
         if(data.e){
             graphics.erase();
         }
@@ -479,12 +472,69 @@ const t = (p) => {
         p.infoDiv.style("padding", "5px");
         p.infoDiv.style("text-align", "center");
         p.masterDiv.style("background-color", p.color("#375057"));
+        p.masterDiv.style("margin-right", "20px");
         
     }
 
     p.draw = function(){
         p.image(p.g,0,0);
     }
+
+}
+
+/**
+ * Portrait object
+ */
+const p = (p) => {
+
+    p.setup = function(){
+        p.canvas = p.createCanvas(400, 400);
+        p.background(255);
+        graphics = p.createGraphics(400,400);
+        
+        p.canvas.style('borderRadius', '4%');
+
+        graphics.stroke(0);
+        graphics.strokeWeight(15);
+
+        p.masterDiv = p.createDiv();
+        p.masterDiv.parent("portraitArea");
+        p.canvas.parent(p.masterDiv);     
+    }
+
+    p.draw = function(){
+        p.image(graphics,0,0);
+    }
+
+    p.setColor = function(c){
+        graphics.stroke(c);
+    }
+
+    p.mouseDragged = function(){
+        if (p.mouseX <= p.width && p.mouseX >= 0 && p.mouseY <= p.height && p.mouseY >= 0){ 
+            graphics.line(p.mouseX, p.mouseY, p.pmouseX, p.pmouseY);
+        }
+        return false;
+    }
+
+    p.mousePressed = function(){
+        if (p.mouseX <= p.width && p.mouseX >= 0 && p.mouseY <= p.height && p.mouseY >= 0){ 
+            graphics.circle(p.mouseX, p.mouseY, 1);
+        }
+    }
+
+    p.saveDrawing = function(){
+        let img = p.canvas.get();
+        img.resize(100,0);
+        let imgString = img.canvas.toDataURL();
+        //let imgString = graphics.elt.toDataURL();
+        return imgString;
+        //Convert imgString to blob before sending it to the server
+    }
+
+   /*  p.linkToParent = function(){
+        p.masterDiv.parent("portraitArea");
+    } */
 
 }
 

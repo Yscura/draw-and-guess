@@ -59,8 +59,12 @@ App.Host = {
         }
 
         // Update host screen
+        var portrait = new Image();
+        portrait.src = data.myPortrait;
+        portrait.classList.add("portrait");
         var $newP = $("<div/>").addClass("playerWaiting").attr('id', data.mySocketId)
-            .append($("<div/>").addClass("playerName").text(data.playerName));
+            .append($("<div/>").addClass("playerName").text(data.playerName))
+            .append($("<div/>").addClass("playerPortrait").html(portrait));
 
         $newP.css("backgroundColor", data.myColor);
         $("#playersWaitingBox").append($newP);
@@ -95,7 +99,7 @@ App.Host = {
 
         // Begin the countdown timer
         var $secondsLeft = $('#hostWord');
-        App.countDown( $secondsLeft, 5, function(){
+        App.countDown( $secondsLeft, 1, function(){
             var data = {
                 gameId : App.gameId,
                 players : App.Host.players
@@ -109,10 +113,16 @@ App.Host = {
         
         //Display player names & scores
         $.each(App.Host.players, function(){
+            var portrait = new Image();
+            portrait.src = this.myPortrait;
+            portrait.classList.add("portrait");
             var $p = $("<div/>").addClass("playerScore").attr('id', this.mySocketId)
-                .append($("<div/>").addClass("playerName").text(this.playerName))
-                .append($("<div/>").addClass("score").text(0))
-                .append($("<div/>").addClass("addscore").css("display", "none"));
+                .append($("<div/>").addClass("playerInfoHolder")
+                    .append($("<div/>").addClass("playerName").text(this.playerName))
+                    .append($("<div/>").addClass("scoreHolder")
+                        .append($("<div/>").addClass("score").text(0))
+                        .append($("<div/>").addClass("addscore").css("display", "none"))))
+                .append($("<div/>").addClass("playerPortrait").html(portrait));
 
             $p.css("backgroundColor", this.myColor);
             $("#playerScores").append($p);

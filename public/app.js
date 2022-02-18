@@ -7,9 +7,9 @@ jQuery(function($){
     'use strict';
 
     //Prevent user from accidentally leave the game
-    $(window).on("beforeunload", function (event) {
+    /* $(window).on("beforeunload", function (event) {
         return "";
-    });
+    }); */
     
     App = {
 
@@ -40,6 +40,8 @@ jQuery(function($){
             App.$templateIntroScreen = $('#intro-screen-template').html();
             App.$templateNewGame = $('#create-game-template').html();
             App.$templateJoinGame = $('#join-game-template').html();
+            App.$templatePortrait = $('#portrait-template').html();
+            
             App.$templateStartGame = $('#start-game-template').html();
             App.$templateDrawWord = $('#draw-template').html();
             App.$hostGame = $('#host-game-template').html();
@@ -55,6 +57,7 @@ jQuery(function($){
             // Player
             App.$doc.on('click', '#btnJoin', App.Player.onJoinClick);
             App.$doc.on('click', '#btnJoinGame',App.Player.onPlayerJoinGameClick);
+            App.$doc.on('click', '#btnSubmitPortrait',App.Player.onPlayerSubmitPortraitClick);
             App.$doc.on('click', '#btnStartGame',App.Player.onPlayerStartGameClick);
             App.$doc.on('click', '.btnAnswer',App.Player.onPlayerAnswerClick);
             App.$doc.on('click', '#btnPlayerEndGame', App.Player.onPlayerEndGame);
@@ -146,7 +149,7 @@ jQuery(function($){
 
     };
 
-    //Wait scripts to load before init
+    //Wait for scripts to load before init
     $(App.$doc).ready(function(){
         App.init();
     });

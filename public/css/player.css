@@ -3,6 +3,11 @@
         PLAYER GAME SCREEN
 
 ****************************** */
+#portraitArea{
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 .startGameWrapper{
     font-family: 'Quicksand', sans-serif;
     text-align: center;

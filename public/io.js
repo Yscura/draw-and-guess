@@ -11,8 +11,11 @@ IO = {
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
         IO.socket.on('playerLeft', IO.onPlayerLeft);
+        IO.socket.on('playerReconnect', IO.onPlayerReconnect);
         IO.socket.on('newGameCreated', IO.onNewGameCreated);
         IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom);
+        IO.socket.on('playerSubmitPortrait', IO.playerSubmitPortrait);
+        
         IO.socket.on('firstPlayerJoined', IO.firstPlayerJoined);
         IO.socket.on('beginNewGame', IO.beginNewGame);
         IO.socket.on('newWordData', IO.onNewWordData);
@@ -42,12 +45,25 @@ IO = {
      */
     onConnected : function() {
 
-        /*  if(localStorage.getItem('playerData')){
-            $("#gameArea").html("Trying to reconnect...");
-        } */
-
+       /*  var pstorage = localStorage.getItem('playerData');
+        var pData = JSON.parse(pstorage);
+        console.log(pData);
+        if(pData){
+            console.log(pData.gameId);
+            $("#gameArea").html("Trying to reconnect...").css("color", "white");
+            IO.socket.emit('playerReconnect', pData);
+            App.mySocketId = pData.mySocketId;
+            //localStorage.removeItem('playerData');
+        }
+    else{ }*/
         App.mySocketId = IO.socket.id;
+        
     },
+
+    /* onPlayerReconnect : function(data) {
+        console.log("player reconnected: " + data.playerName)
+        App[App.myRole].updateWaitingScreen(data);
+    }, */
 
      onPlayerLeft : function(playerId) {
         if(App.myRole === 'Host') {
@@ -60,6 +76,12 @@ IO = {
     },
 
     playerJoinedRoom : function(data) {
+        if(App.myRole === 'Player') {
+            App.Player.drawPortrait(data);
+        }
+    },
+
+    playerSubmitPortrait : function(data) {
         App[App.myRole].updateWaitingScreen(data);
     },
 

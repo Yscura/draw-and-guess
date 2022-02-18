@@ -1,5 +1,7 @@
 var App = App || {};
 
+var drawPortrait;
+
 /* *****************************
 *        PLAYER CODE        *
 ***************************** */
@@ -8,6 +10,7 @@ App.Player = {
 
     myName: '',
     myColor: '',
+    myPortrait: '',
     isDrawer: false,
 
     /**
@@ -30,6 +33,23 @@ App.Player = {
 
         App.myRole = 'Player';
         App.Player.myName = data.playerName;
+    },
+
+    onPlayerSubmitPortraitClick: function() {
+        if(!portrait){
+            var portrait = drawPortrait.saveDrawing();
+            App.Player.myPortrait = portrait;
+        }
+        
+        var data = {
+            gameId : App.gameId,
+            playerName : App.Player.myName,
+            myColor : App.Player.myColor,
+            mySocketId : App.mySocketId,
+            myPortrait : App.Player.myPortrait
+        };
+
+        IO.socket.emit('playerSubmitPortrait', data);
     },
 
     /**
@@ -101,7 +121,8 @@ App.Player = {
         var data = {
             gameId : App.gameId,
             playerName : App.Player.myName,
-            myColor: App.Player.myColor 
+            myColor: App.Player.myColor,
+            myPortrait : App.Player.myPortrait
         }
         IO.socket.emit('playerRestart', data);
         App.currentRound = 0;
@@ -110,19 +131,32 @@ App.Player = {
     },
 
     /**
+     * Display a canvas where the player can draw themselves
+     * @param  {} data
+     */
+    drawPortrait : function(data) {
+        if(App.mySocketId === data.mySocketId){
+            App.$gameArea.html(App.$templatePortrait);
+            App.gameId = data.gameId;
+            App.Player.myColor = data.myColor;
+
+            drawPortrait = new p5(p);
+            drawPortrait.setColor(data.myColor);
+        }
+    },
+
+    /**
      * A player has joined the game.
      * @param  data
      */
     updateWaitingScreen : function(data) {
-        if(IO.socket.id === data.mySocketId){
-            App.gameId = data.gameId;
-
-            App.Player.myColor = data.myColor;
-        
+        if(App.mySocketId === data.mySocketId){
             //Save player data to not lose it on accidental refresh
-            //localStorage.setItem('playerData', data);
+            /* localStorage.setItem('playerData', JSON.stringify(data));
+            console.log(data); */
 
-            $('#btnJoinGame').hide();
+            
+            $('#portraitSection').hide();
             $('#playerWaitingMessage')
                 .append('<p/>')
                 .html('Joined Game ' + "<span id='wordColored'>"+ data.gameId + "</span>" + '. Please wait for game to begin.');
@@ -303,6 +337,7 @@ App.Player = {
             );
         }
         
+        localStorage.removeItem('playerData');
     },
 
     /**

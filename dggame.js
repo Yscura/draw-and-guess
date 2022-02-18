@@ -3,12 +3,14 @@ var gameSocket;
 var wb = require('./wordBank');
 //const Datastore = require('nedb');
 
+const { json } = require("express/lib/response");
 
 exports.initGame = function(sio, socket){
     io = sio;
     gameSocket = socket;
     gameSocket.emit('connected');
     //console.log("Connection: PlayerID: " + gameSocket.id);
+    //gameSocket.on('playerReconnect', playerReconnect);
 
     //Host Events
     gameSocket.on('hostCreateNewGame', hostCreateNewGame);
@@ -19,6 +21,8 @@ exports.initGame = function(sio, socket){
 
     //Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
+    gameSocket.on('playerSubmitPortrait', playerSubmitPortrait);
+    
     gameSocket.on('playerGuess', playerGuess);
     gameSocket.on('playerCorrectGuess', playerCorrectGuess);
     gameSocket.on('playerWrongGuess', playerWrongGuess);
@@ -43,12 +47,20 @@ function resetCanvas(data){
     io.sockets.in(data.gameId).emit("resetCanvas", data);
 };
 
+
+/* function playerReconnect(data){
+    console.log(data.playerName);
+    this.join(data.gameId);
+    io.sockets.in(data.gameId).emit("playerReconnect", data);
+}; */
+
+
 //HOST FUNCTIONS
 
 function hostCreateNewGame() {
 
-    var thisGameId = Math.floor(Math.random() * (9999 - 1001 + 1) + 1001);
-    //var thisGameId = 1;
+    //var thisGameId = Math.floor(Math.random() * (9999 - 1001 + 1) + 1001);
+    var thisGameId = 1;
     
     //If this room does not yet exist, join it
     if(!gameSocket.adapter.rooms.get(thisGameId)){
@@ -131,6 +143,10 @@ function playerJoinGame(data) {
     }
 }
 
+function playerSubmitPortrait(data){
+    io.sockets.in(data.gameId).emit('playerSubmitPortrait', data);
+}
+
 function firstPlayerJoined(data){
     io.sockets.to(data.playerId).emit('firstPlayerJoined', data);
 }
@@ -157,7 +173,7 @@ function playerEndGame(data) {
 
 function playerRestart(data) {
     data.mySocketId = this.id;
-    io.sockets.in(data.gameId).emit('playerJoinedRoom',data);
+    io.sockets.in(data.gameId).emit('playerSubmitPortrait',data);
 }
 
 function playerLeft() {
